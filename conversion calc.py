@@ -69,11 +69,11 @@ def weight_conversion(question):
 
         try:
 
-            weight_units = ["pg", "ng", "μg", "mg", "g", "kg", "t"]
+            weight_unit = ["pg", "ng", "μg", "mg", "g", "kg", "t"]
 
             response = input(question)
 
-            if response in weight_units:
+            if response in weight_unit:
                 return response
 
             else:
@@ -91,11 +91,11 @@ def time_conversion(question):
 
         try:
 
-            time_units = ["ps", "ns", "μs", "ms", "s", "mins", "hours", "days", "weeks", "years"]
+            time_unit = ["ps", "ns", "μs", "ms", "s", "mins", "hours", "days", "years"]
 
             response = input(question)
 
-            if response in time_units:
+            if response in time_unit:
                 return response
 
             else:
@@ -113,11 +113,11 @@ def distance_conversion(question):
 
         try:
 
-            distance_units = ["pm", "nm", "μm", "mm", "m", "km", "Mm"]
+            distance_unit = ["pm", "nm", "μm", "mm", "m", "km", "Mm"]
 
             response = input(question)
 
-            if response in distance_units:
+            if response in distance_unit:
                 return response
 
             else:
@@ -127,34 +127,14 @@ def distance_conversion(question):
             print(error)
 
 
-weight_prefix_b = {
-    "pg": 0.000000000001,
-    "ng": 0.000000001,
-    "μg": 0.000001,
-    "mg": 0.001,
-    "g": 1,
-    "kg": 0.001,
-    "t": 0.000001
-}
-
 weight_prefix_a = {
     "pg": 1000000000000,
     "ng": 1000000000,
     "μg": 1000000,
     "mg": 1000,
     "g": 1,
-    "kg": 1000,
-    "t": 1000000
-}
-
-distance_prefix_b = {
-    "pm": 0.000000000001,
-    "nm": 0.000000001,
-    "μm": 0.000001,
-    "mm": 0.001,
-    "m": 1,
-    "km": 0.001,
-    "Mm": 0.000001
+    "kg": 0.001,
+    "t": 0.000001
 }
 
 distance_prefix_a = {
@@ -163,48 +143,25 @@ distance_prefix_a = {
     "μm": 1000000,
     "mm": 1000,
     "m": 1,
-    "km": 1000,
-    "Mm": 1000000
+    "km": 0.001,
+    "Mm": 0.000001
 }
 
-time_dict_b = {
-    "ps": 0.000000000001,
-    "ns": 0.000000001,
-    "μs": 0.000001,
-    "ms": 0.001,
-    "s": 1,
-    "mins": 0.0166667,
-    "hours": 0.000277778,
-    "days": 1.1574e-5,
-    "weeks": 1.6534e-6,
-    "years": 3.171e-8
-}
-
-time_dict_a = {
+time_dict = {
     "ps": 1000000000000,
     "ns": 1000000000,
     "μs": 1000000,
     "ms": 1000,
     "s": 1,
-    "mins": 60,
-    "hours": 3600,
-    "days": 86400,
-    "weeks": 604800,
-    "years": 3.154e+7
+    "mins": (1 / 60),
+    "hours": (1 / (60 * 60)),
+    "days": (1 / (60 * 60 * 24)),
+    "years": (1 / (60 * 60 * 24 * 365))
 }
 
 weight_units = ["pg", "ng", "μg", "mg", "g", "kg", "t"]
-time_units = ["ps", "ns", "μs", "ms", "s", "mins", "hours", "days", "weeks", "years"]
+time_units = ["ps", "ns", "μs", "ms", "s", "mins", "hours", "days", "years"]
 distance_units = ["pm", "nm", "μm", "mm", "m", "km", "Mm"]
-
-"pg"<"ng"<"μg"<"mg"<"g"<"kg"<"t"
-"t">"kg">"g">"mg">"μg">"ng">"pg"
-
-"ps"<"ns"<"μs"<"ms"<"s"<"mins"<"hours"<"days"<"weeks"<"years"
-"years">"weeks">"days">"hours">"mins">"s">"ms">"μs">"ns">"ps"
-
-"pm"<"nm"<"μm"<"mm"<"m"<"km"<"Mm"
-"Mm">"km">"m">"mm">"μm">"nm">"pm"
 
 print(statement_gen("ultimate conversion calculator", "#"))
 print()
@@ -229,123 +186,48 @@ while keep_going == "":
     topic_area = which_unit("\nwhat will be converting? ").lower()
 
     if topic_area == "weight":
-        og_num = num_check("what is the number of units? ")
-        og_unit = weight_conversion("what is the original unit? ")
-        print("you have {} {}".format(og_num, og_unit))
+        amount = float(input("what is the original number: "))
+        from_unit = input("original unit: ")
+        to_unit = input("converted unit: ")
 
-        if og_unit > "g":
-            og_convert_multi = weight_prefix_a[og_unit]
-            in_g = og_num * og_convert_multi
+        divide_by = time_dict[from_unit]
+        print("multiply by", divide_by)
+        in_g = amount / divide_by
 
-        elif og_unit < "g":
-            og_convert_multi = weight_prefix_b[og_unit]
-            in_g = og_num * og_convert_multi
+        multiply_by = time_dict[to_unit]
+        final = in_g * multiply_by
 
-        elif og_unit == "g":
-            in_g = og_num
+        print(f"{amount}{from_unit} is {final}{to_unit}")
 
-        else:
-            print("that is not a valid unit")
-            print()
+    elif topic_area == "time":
+        amount = float(input("what is the original number: "))
+        from_unit = input("original unit: ")
+        to_unit = input("converted unit: ")
 
-        to_convert = weight_conversion("what will the new unit be? ")
+        divide_by = time_dict[from_unit]
+        print("multiply by", divide_by)
+        in_g = amount / divide_by
 
-        if to_convert > "g":
-            convert_multi = weight_prefix_b[to_convert]
-            final = in_g * convert_multi
+        multiply_by = time_dict[to_unit]
+        final = in_g * multiply_by
 
-        elif to_convert < "g":
-            convert_multi = weight_prefix_a[to_convert]
-            final = in_g * convert_multi
+        print(f"{amount}{from_unit} is {final}{to_unit}")
 
-        elif to_convert == "g":
-            final = in_g
+    elif topic_area == "distance":
+        amount = float(input("what is the original number: "))
+        from_unit = input("original unit: ")
+        to_unit = input("converted unit: ")
 
-        else:
-            print("that is not a valid unit")
-            print()
+        divide_by = time_dict[from_unit]
+        print("multiply by", divide_by)
+        in_g = amount / divide_by
 
-        print("\nyou now have {} {}".format(final, to_convert))
-        print()
+        multiply_by = time_dict[to_unit]
+        final = in_g * multiply_by
 
-    if topic_area == "time":
-        og_num = num_check("what is the number of units? ")
-        og_unit = time_conversion("what is the original unit? ")
-        print("you have {} {}".format(og_num, og_unit))
+        print(f"{amount}{from_unit} is {final}{to_unit}")
 
-        if og_unit > "s":
-            og_convert_multi = time_dict_a[og_unit]
-            in_g = og_num * og_convert_multi
-
-        elif og_unit < "s":
-            og_convert_multi = time_dict_b[og_unit]
-            in_g = og_num * og_convert_multi
-
-        elif og_unit == "s":
-            in_g = og_num
-
-        else:
-            print("that is not a valid unit")
-            print()
-
-        to_convert = time_conversion("what will the new unit be? ")
-
-        if to_convert > "s":
-            convert_multi = time_dict_b[to_convert]
-            final = in_g * convert_multi
-
-        elif to_convert < "s":
-            convert_multi = time_dict_a[to_convert]
-            final = in_g * convert_multi
-
-        elif to_convert == "s":
-            final = in_g
-
-        else:
-            print("that is not a valid unit")
-            print()
-
-        print("\nyou now have {} {}".format(final, to_convert))
-        print()
-
-    if topic_area == "weight":
-        og_num = num_check("what is the number of units? ")
-        og_unit = distance_conversion("what is the original unit? ")
-        print("you have {} {}".format(og_num, og_unit))
-
-        if og_unit > "m":
-            og_convert_multi = distance_prefix_a[og_unit]
-            in_g = og_num * og_convert_multi
-
-        elif og_unit < "m":
-            og_convert_multi = distance_prefix_b[og_unit]
-            in_g = og_num * og_convert_multi
-
-        elif og_unit == "m":
-            in_g = og_num
-
-        else:
-            print("that is not a valid unit")
-            print()
-
-        to_convert = distance_conversion("what will the new unit be? ")
-
-        if to_convert > "m":
-            convert_multi = distance_prefix_b[to_convert]
-            final = in_g * convert_multi
-
-        elif to_convert < "m":
-            convert_multi = distance_prefix_a[to_convert]
-            final = in_g * convert_multi
-
-        elif to_convert == "m":
-            final = in_g
-
-        else:
-            print("that is not a valid unit")
-            print()
-
-        print("\nyou now have {} {}".format(final, to_convert))
-        print()
+    else:
+        print(t_error)
 
 keep_going = input("\nif you want to try again press <> if you want to stop press <any> ")
